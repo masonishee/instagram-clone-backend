@@ -11,3 +11,10 @@ def hello():
 @app.route("/posts.json")
 def index():
     return db.posts_all()
+
+@app.route("/posts.json", methods=["POST"])
+def create():
+    user = request.form.get("user")
+    image_url = request.form.get("image_url")
+    comment = request.form.get("comment")
+    return db.posts_create(user, image_url, comment)

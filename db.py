@@ -15,6 +15,19 @@ def posts_all():
     ).fetchall()
     return [dict(row) for row in rows]
 
+def posts_create(user, image_url, comment):
+    conn = connect_to_db()
+    row = conn.execute(
+        """
+        INSERT INTO posts (user, image_url, comment)
+        VALUES (?, ?, ?)
+        RETURNING *
+        """,
+        (user, image_url, comment),
+    ).fetchone()
+    conn.commit()
+    return dict(row)
+
 def initial_setup():
     conn = connect_to_db()
     conn.execute(
