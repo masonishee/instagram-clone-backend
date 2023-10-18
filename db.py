@@ -28,6 +28,17 @@ def posts_create(user, image_url, comment):
     conn.commit()
     return dict(row)
 
+def posts_find_by_id(id):
+    conn = connect_to_db()
+    row = conn.execute(
+        """
+        SELECT * FROM posts
+        WHERE id = ?
+        """,
+        id,
+    ).fetchone()
+    return dict(row)
+
 def initial_setup():
     conn = connect_to_db()
     conn.execute(

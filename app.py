@@ -7,6 +7,9 @@ app = Flask(__name__)
 def hello():
     return 'ITS A POSTS APP!'
 
+@app.route("/posts/<id>.json")
+def show(id):
+    return db.posts_find_by_id(id)
 
 @app.route("/posts.json")
 def index():
