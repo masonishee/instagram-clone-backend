@@ -6,6 +6,14 @@ def connect_to_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+def posts_all():
+    conn = connect_to_db()
+    rows = conn.execute(
+        """
+        SELECT * FROM posts
+        """
+    ).fetchall()
+    return [dict(row) for row in rows]
 
 def initial_setup():
     conn = connect_to_db()
