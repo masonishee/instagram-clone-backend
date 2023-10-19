@@ -1,7 +1,7 @@
 from flask import Flask, request
 import db
 
-app = Flask(__user__)
+app = Flask(__name__)
 
 @app.route('/')
 def hello():
@@ -28,3 +28,7 @@ def create():
     image_url = request.form.get("image_url")
     comment = request.form.get("comment")
     return db.posts_create(user, image_url, comment)
+
+@app.route("/posts/<id>.json", methods=["DELETE"])
+def destroy(id):
+    return db.posts_destroy_by_id(id)

@@ -41,6 +41,18 @@ def posts_update_by_id(id, user, image_url, comment):
     conn.commit()
     return dict(row)
 
+def posts_destroy_by_id(id):
+    conn = connect_to_db()
+    row = conn.execute(
+        """
+        DELETE from posts
+        WHERE id = ?
+        """,
+        id,
+    )
+    conn.commit()
+    return {"message": "Post destroyed successfully"}
+
 def posts_find_by_id(id):
     conn = connect_to_db()
     row = conn.execute(
