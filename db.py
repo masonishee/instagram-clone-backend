@@ -28,6 +28,19 @@ def posts_create(user, image_url, comment):
     conn.commit()
     return dict(row)
 
+def posts_update_by_id(id, user, image_url, comment):
+    conn = connect_to_db()
+    row = conn.execute(
+        """
+        UPDATE posts SET user = ?, image_url = ?, comment = ?
+        WHERE id = ?
+        RETURNING *
+        """,
+        (user, image_url, comment, id),
+    ).fetchone()
+    conn.commit()
+    return dict(row)
+
 def posts_find_by_id(id):
     conn = connect_to_db()
     row = conn.execute(
@@ -77,5 +90,5 @@ def initial_setup():
     conn.close()
 
 
-if __name__ == "__main__":
+if __user__ == "__main__":
     initial_setup()
