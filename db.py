@@ -1,19 +1,33 @@
 import sqlite3
+from flask import Flask, request, jsonify, g
 
+app = Flask(__name__)
+DATABASE = 'database.db'
 
 def connect_to_db():
     conn = sqlite3.connect("database.db")
     conn.row_factory = sqlite3.Row
     return conn
 
-def posts_all():
+# @app.teardown_appcontext
+def close_connection(exception):
+    conn = getattr(g, '_database', None)
+    if conn is not None:
+        conn.close()
+
+# @app.before_first_request
+def users_create(username, email, password):
     conn = connect_to_db()
-    rows = conn.execute(
+    row = conn.execute(        
         """
-        SELECT * FROM posts
-        """
-    ).fetchall()
-    return [dict(row) for row in rows]
+        INSERT INTO posts (user, image_url, comment)
+        VALUES (?, ?, ?)
+        RETURNING *
+        """, 
+        (username, email, password),
+    ).fetchone()
+    conn.commit()
+    return dict(row)
 
 def posts_create(user, image_url, comment):
     conn = connect_to_db()
@@ -27,6 +41,15 @@ def posts_create(user, image_url, comment):
     ).fetchone()
     conn.commit()
     return dict(row)
+
+def posts_all():
+    conn = connect_to_db()
+    rows = conn.execute(
+        """
+        SELECT * FROM posts
+        """
+    ).fetchall()
+    return [dict(row) for row in rows]
 
 def posts_update_by_id(id, user, image_url, comment):
     conn = connect_to_db()
